@@ -6,11 +6,7 @@ const inputCheck = require("../utils/inputCheck");
 
 
 router.get('/departments', (req, res) => {
-    const sql = `SELECT candidates.*, parties.name 
-                    AS party_name 
-                    FROM candidates 
-                    LEFT JOIN parties 
-                    ON candidates.party_id = parties.id`;
+    const sql = `SELECT * FROM departments`;
 
     db.query(sql, (err,rows) => {
         if (err) {
