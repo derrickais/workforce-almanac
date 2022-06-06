@@ -6,7 +6,7 @@ const app = express();
 const apiRoutes = require("./routes")
 const inputCheck = require("./utils/inputCheck");
 const db = require("./db/connection.js");
-const runApp = require("./index")
+//const runApp = require("./index")
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

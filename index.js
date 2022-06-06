@@ -1,3 +1,3 @@
 const inquirer = require("inquirer");
 
-module.exports = runApp;
+//module.exports = runApp;
