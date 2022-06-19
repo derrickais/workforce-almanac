@@ -73,6 +73,8 @@ router.put('/employee/:id', (req, res) => {
     });
 });
 
+
+
 router.delete('/employee/:id', (req, res) => {
 
     const sql = `DELETE FROM employees WHERE id = ?`;
@@ -88,7 +90,6 @@ router.delete('/employee/:id', (req, res) => {
         } else {
             res.json({
                 message: 'success',
-                data: req.body,
                 changes: result.affectedRows
             });
         }
