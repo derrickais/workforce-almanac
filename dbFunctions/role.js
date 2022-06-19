@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require("../db/connection");
 const inputCheck = require("../utils/inputCheck");
 
-router.get('/roles', (req, res) => {
+function getAllRoles(callback) {
     const sql = `SELECT roles.*, departments.name 
                     AS department_name 
                     FROM roles 
@@ -13,58 +13,67 @@ router.get('/roles', (req, res) => {
 
     db.query(sql, (err,rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            callback({
+                status: "error",
+                message: err.message
+            })
             return;
         }
-        res.json({
-            message: "success",
+        callback({
+            status: "success",
             data: rows
         });
     });
-});
+};
 
-router.post('/roles', ({ body }, res) => {
+function createRole(title, salary, department_id, callback) {
 
-    const errors = inputCheck(body, 'title', 'salary', 'department_id');
-    if (errors) {
-        res.status(400).json({ error: errors });
-        return;
-    }
     const sql = `INSERT INTO roles (title, salary, department_id)
     VALUES (?,?,?)`;
-    const params = [body.title, body.salary, body.department_id];
+    const params = [title, salary, department_id];
 
     db.query(sql, params, (err, result) => {
         if (err) {
-            res.status(400).json({ error: err.message });
+            callback({
+                status: "error",
+                message: err.message
+            })
             return;
         }
-        res.json({
-            message: 'success',
-            data: body
+        callback({
+            status: 'success',
+            data: result
         });
     });
-});
+};
 
-router.delete('/role/:id', (req, res) => {
+function deleteRole(id, callback) {
 
     const sql = `DELETE FROM roles WHERE id = ?`;
-    const params = [req.params.id];
+    const params = [id];
 
     db.query(sql, params, (err, result) => {
         if (err) {
-            res.status(400).json({ error: err.message });
+            callback({
+                status: "error",
+                message: err.message
+            })
         } else if (!result.affectedRows) {
-            res.json({
+            callback({
+            status: "error",
              message: 'Role not found'
         });
         } else {
-            res.json({
-                message: 'success',
+            callback({
+                status: 'success',
                 changes: result.affectedRows
             });
         }
     });
-});
+}
 
-module.exports = router;
+module.exports = {
+    getAllRoles,
+    createRole,
+    deleteRole,
+};

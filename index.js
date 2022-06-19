@@ -1,5 +1,9 @@
 const inquirer = require("inquirer");
-const 
+
+const db = require("./db/connection.js");
+const { getAllDepartments, deleteDepartment, createDepartment } = require("./dbFunctions/department");
+const { getAllEmployees, createEmployee, updateEmployee, deleteEmployee } = require("./dbFunctions/employee");
+const { getAllRoles, createRole, deleteRole } = require('./dbFunctions/role');
 
 const runApp = function() {
     inquirer.prompt([{
@@ -20,7 +24,54 @@ const runApp = function() {
         const action = answers.action.substring(0,1)
         
         if (action == 1) {
-
+            getAllDepartments(function(response) {
+                console.log(response)
+            })
+        }
+        if (action == 2) {
+            getAllRoles(function(response) {
+                console.log(response)
+            })
+        }
+        if (action == 3) {
+            getAllEmployees(function(response) {
+                console.log(response)
+            })
+        }
+        if (action == 4) {
+            createDepartment(function(response) {
+                console.log(response)
+            })
+        }
+        if (action == 5) {
+            inquirer.prompt([{
+                type: "input",
+                name: "title",
+                message: "What is the title of the role?"
+            }, {
+                type: "number",
+                name: "salary",
+                message: "What is the salary?"
+            }, {
+                type: "number",
+                name: "department_id",
+                message: "What is the department ID?"
+            }])
+            .then ((answers) => {
+                createRole(answers.title, answers.salary, answers.department_id, function(response) {
+                    console.log(response)
+                })
+            })
+        }
+        if (action == 6) {
+            createEmployee(function(response) {
+                console.log(response)
+            })
+        }
+        if (action == 7) {
+            updateEmployee(function(response) {
+                console.log(response)
+            })
         }
     })
     .catch((error) => {
@@ -30,4 +81,8 @@ const runApp = function() {
 });
 }
 
-module.exports = runApp;
+db.connect(err => {
+    if(err) throw err;
+    console.log("Database connected.");
+    runApp()
+});
