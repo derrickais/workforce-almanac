@@ -1,8 +1,4 @@
-const express = require("express");
-const router = express.Router();
-
 const db = require("../db/connection");
-const inputCheck = require("../utils/inputCheck");
 
 function getAllEmployees(callback) {
     const sql = `SELECT employees.id, employees.first_name, employees.last_name, CONCAT(e.first_name, " ", e.last_name) as "manager", roles.title, departments.name AS "Department Name"  FROM employees
@@ -42,14 +38,14 @@ function createEmployee(first_name, last_name, role_id, manager_id, callback) {
         }
         callback({
             status: 'success',
-            data: body
+            data: result
         });
     });
 }
 
 function updateEmployee(role_id, id, callback) {
     const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
-    const params = [req.body.role_id, req.params.id];
+    const params = [role_id, id];
 
     db.query(sql, params, (err, result) => {
         if (err) {
@@ -65,8 +61,7 @@ function updateEmployee(role_id, id, callback) {
         } else {
             callback({
                 status: 'success',
-                data: req.body,
-                changes: result.affectedRows
+                data: result
             });
         }
     });
@@ -93,7 +88,6 @@ function deleteEmployee(id, callback) {
         } else {
             callback({
                 status: 'success',
-                changes: result.affectedRows
             });
         }
     });
